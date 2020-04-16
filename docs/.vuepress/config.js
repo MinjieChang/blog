@@ -25,12 +25,12 @@ const themeConfig = {
 			},
       {
         title: '设计模式系列',   // 必要的
-        path: '/designPattern/',      // 可选的, 应该是一个绝对路径
+        // path: '/designPattern/',      // 可选的, 应该是一个绝对路径
         collapsable: true, // 可选的, 默认值是 true,
         sidebarDepth: 2,    // 可选的, 默认值是 1
-        // children: [
-        //   '/designPattern/subscribe'
-        // ]
+        children: [
+          '/designPattern/subscribe/'
+        ]
       },
       {
         title: '前端',   // 必要的
