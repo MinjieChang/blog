@@ -29,7 +29,8 @@ const themeConfig = {
         collapsable: true, // 可选的, 默认值是 true,
         sidebarDepth: 2,    // 可选的, 默认值是 1
         children: [
-          '/designPattern/subscribe/'
+          '/designPattern/subscribe/',
+          '/designPattern/aop/',
         ]
       },
       {
@@ -43,10 +44,13 @@ const themeConfig = {
         ]
       },
       {
-        title: 'node',   // 必要的
-        path: '/node/',      // 可选的, 应该是一个绝对路径
-        collapsable: false, // 可选的, 默认值是 true,
-        sidebarDepth: 1,    // 可选的, 默认值是 1
+        title: 'node',
+        // path: '/node/',
+        collapsable: true,
+        sidebarDepth: 2,
+        children: [
+          "/node/koa2/",
+        ]
       },
     ],
     // sidebarDepth: 2,
