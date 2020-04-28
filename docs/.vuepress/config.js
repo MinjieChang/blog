@@ -2,6 +2,7 @@ const themeConfig = {
   themeConfig: {
     nav: [
         { text: '主页', link: '/' },
+        { text: "最新文章", link: '/node/koa2/' },
         { text: '前端', link: '/web/'
           // items: [
           //   { text: 'Web', link: '/web/' },
