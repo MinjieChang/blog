@@ -12,7 +12,11 @@ const themeConfig = {
         },
         { text: 'node', link: '/node/' },
         { text: '关于', link: '/about/' },
-        { text: 'Github', link: 'https://www.github.com/codeteenager' },
+        {
+          text: "知乎",
+          link: "https://www.zhihu.com/people/jay-55-9/posts"
+        },
+        { text: 'Github', link: 'https://github.com/vuejs/vuepress' },
     ],
     sidebar: [
       {
