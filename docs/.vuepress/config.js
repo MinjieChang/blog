@@ -29,10 +29,10 @@ const themeConfig = {
 				// ]
 			},
       {
-        title: '设计模式系列',   // 必要的
-        // path: '/designPattern/',      // 可选的, 应该是一个绝对路径
-        collapsable: true, // 可选的, 默认值是 true,
-        sidebarDepth: 2,    // 可选的, 默认值是 1
+        title: '设计模式',
+        // path: '/designPattern/',
+        collapsable: true,
+        sidebarDepth: 2,
         children: [
           '/designPattern/subscribe/',
           '/designPattern/aop/',
@@ -45,7 +45,15 @@ const themeConfig = {
         sidebarDepth: 2,    // 可选的, 默认值是 1
         children: [
           "/react/",
-          "/vue/"
+          "/vue/",
+        ]
+      },
+      {
+        title: 'css',
+        collapsable: true,
+        sidebarDepth: 2,
+        children: [
+          "/css/csshoudini/"
         ]
       },
       {
