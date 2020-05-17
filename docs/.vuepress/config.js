@@ -2,13 +2,13 @@ const themeConfig = {
   themeConfig: {
     nav: [
         { text: '主页', link: '/' },
-        { text: "最新文章", link: '/node/koa2/' },
-        { text: '前端', link: '/web/'
-          // items: [
-          //   { text: 'Web', link: '/web/' },
-          //   { text: 'react', link: '/react/' },
-          //   { text: 'vue', link: '/vue/' },
-          // ] 
+        { text: "最新文章", link: '/recent/' },
+        { text: '前端', link: '/web/',
+          items: [
+            { text: 'react', link: '/react/' },
+            { text: 'vue', link: '/vue/' },
+            { text: 'css', link: '/css/' },
+          ] 
         },
         { text: 'node', link: '/node/' },
         { text: '关于', link: '/about/' },
@@ -16,7 +16,7 @@ const themeConfig = {
           text: "知乎",
           link: "https://www.zhihu.com/people/jay-55-9/posts"
         },
-        { text: 'Github', link: 'https://github.com/vuejs/vuepress' },
+        { text: 'Github', link: 'https://github.com/MinjieChang' },
     ],
     sidebar: [
       {
@@ -39,12 +39,19 @@ const themeConfig = {
         ]
       },
       {
-        title: '前端',   // 必要的
+        title: 'react',
+        collapsable: true,
+        sidebarDepth: 2,
+        children: [
+          "/react/optimization/",
+        ]
+      },
+      {
+        title: 'vue',   // 必要的
         // path: '/web/',      // 可选的, 应该是一个绝对路径
         collapsable: true, // 可选的, 默认值是 true,
         sidebarDepth: 2,    // 可选的, 默认值是 1
         children: [
-          "/react/",
           "/vue/",
         ]
       },
