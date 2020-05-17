@@ -4,12 +4,6 @@
 
 开始听到houdini这个名称，就像刚听到react这个东西，一顿懵逼，不知是何方大神。经过一番了解后，也才发现它并没有很可怕，不过是为我们换了一种css的写法，相对以前给我们提供了更多的选择，有种手脚被放开了的感觉，至于要如何发挥出它的威力，需要开发者自行发挥想象力。下面让我们来一层层解开houdini的神秘的面纱！！
 
-下面，我们可以带着几个问题来一步步了解它，并在文章后面会逐个回答这些问题
-
-1、它是什么？<br>
-2、我们为什么要用它<br>
-3、它能做什么？<br>
-
 ## 现状
 
 在介绍之前，我们先看一个问题，页面有个div盒子，css中这么写，想实现一个随机值的宽度：
@@ -235,15 +229,14 @@ getPageStyles()
 
 ## houdini 是什么
 
+引入官方的介绍
+
 houdini 是 W3C 新成立的一个任务小组，它的终极目标是实现 css 属性的完全兼容。Houdini 提出了一个前无古人的的设想：开放 CSS 的 API 给开发者，开发者可以通过这套接口自行扩展 CSS，并提供相应的工具允许开发者介入浏览器渲染引擎的样式和布局流程中。它的提出要解决的问题就是
 
 - 跨浏览器兼容问题<br>
 - css polyfill 实现困难的问题
 
 其实早在2016年，houdini的概念就已经出现了，只是到2018年chrome65发布的时候才支持这一新特性，可以说它的出现是css领域的一大革新，网上有文章说这是css领域近来几年最振奋人心的革新。
-
-引入官方的介绍
-> Houdini 是 W3C 新成立的一个任务小组，它的终极目标是实现 css 属性的完全兼容。Houdini 提出了一个前无古人的的设想：开放 CSS 的 API 给开发者，开发者可以通过这套接口自行扩展 CSS，并提供相应的工具允许开发者介入浏览器渲染引擎的样式和布局流程中。
 
 从上面的介绍中，Houdini要做的是提供一套api，让开发者可自行拓展css，给予开发者更多的权限。
 
@@ -319,7 +312,7 @@ export default function(){
 
 和自定义属性中api不同的是，这个api的注册使用需要有三个步骤：
 
-1、定义一个worklet
+1、定义一个paintWorklet module
 
 ```js
 function registerWorklet() {
@@ -375,6 +368,13 @@ registerPaint('headerHighlight', class {
 ```
 打开[项目示例](https://minjiechang.github.io/react-css-houdini/#/paint)，查看在react中使用
 
+总结一下paint api的优势：
+
+1、引入canva，可解决原生css无法解决的问题，减少使用不必要的元素<br>
+2、相同的效果可复用<br>
+3、发挥canvas威力，制作一些不规则图形<br>
+4、write js in css
+
 ### Worklet
 
 需要注意的是，这里有个[worklet](https://drafts.css-houdini.org/worklets/)的概念
@@ -401,7 +401,7 @@ Worklet 脚本严格控制了开发者所能执行的操作类型，这就保证
 
 这个api的注册使用也需要有三个步骤，我们用这个api来实现一个瀑布流的的自定义布局masonry：
 
-1、定义一个worklet
+1、定义一个layoutWorklet module
 
 ```js
 function registerWorklet() {
