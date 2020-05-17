@@ -2,7 +2,7 @@
 
 ## 前言
 
-开始听到houdini这个名称，就是刚听到react这个东西，一顿懵逼，不知是何方大神。经过一番了解后，也才发现它只不过是为我们换了一种css的写法，只是相对以前给我们提供了更多的选择，有种手脚被放开了的感觉，至于要怎么玩，各位开发者去自行发挥你们的想象力。下面让我们来一层层解开houdini的神秘的面纱！！
+开始听到houdini这个名称，就像刚听到react这个东西，一顿懵逼，不知是何方大神。经过一番了解后，也才发现它并没有很可怕，不过是为我们换了一种css的写法，相对以前给我们提供了更多的选择，有种手脚被放开了的感觉，至于要如何发挥出它的威力，需要开发者自行发挥想象力。下面让我们来一层层解开houdini的神秘的面纱！！
 
 下面，我们可以带着几个问题来一步步了解它，并在文章后面会逐个回答这些问题
 
@@ -305,6 +305,7 @@ export default function(){
 4、initialValue：初始值
 
 打开[项目示例](https://minjiechang.github.io/react-css-houdini/#/useHoudini)查看
+> 如果打开项目无法生效，需呀在chorme中输入chrome://flags/#enable-experimental-web-platform-features，然后将Experimental Web Platform features这想设置为Enabled
 
 总结一下，使用自定义属性值api，可以带来这几点便利性：
 
@@ -330,7 +331,7 @@ function registerWorklet() {
 registerWorklet()
 ```
 
-2、使用registerPaint注册worklet
+2、使用registerPaint注册headerHighlight类
 
 ```js
 registerPaint('headerHighlight', class {
@@ -394,14 +395,126 @@ Worklet 脚本严格控制了开发者所能执行的操作类型，这就保证
 
 ### CSS Layout API
 
+某些情况下，我们要实现一些比较复杂的布局结构，光靠css实现起来会比较困难，同时往往也会带来一些性能上的问题，而CSS Layout API可以给开发者提供实现复杂布局的能力
+
+和painting API类似，这个api提供一个registerLayout方法，使用这个函数，可以注册一个自定义布局模块，在css中使用的使用调用paint()方法，传入自定义的布局模块名称即可。自定义的布局模块主要作用于display属性
+
+这个api的注册使用也需要有三个步骤，我们用这个api来实现一个瀑布流的的自定义布局masonry：
+
+1、定义一个worklet
+
+```js
+function registerWorklet() {
+  if ('layoutWorklet' in CSS) {
+    CSS.layoutWorklet.addModule(`${process.env.PUBLIC_URL}/layoutWorklet/masonry.js`);
+  }
+}
+registerWorklet()
+```
+
+2、使用registerLayout注册masonry类
+
+```js
+registerLayout('masonry', class {
+  static get inputProperties() {
+    return [ '--padding', '--columns' ];
+  }
+
+  async intrinsicSizes() { /* TODO implement :) */ }
+  async layout(children, edges, constraints, styleMap) {
+    // fixedInlineSize 布局盒子的宽度，相当于widht
+    const inlineSize = constraints.fixedInlineSize;
+
+    // 获取自定义属性
+    const padding = parseInt(styleMap.get('--padding').toString());
+    const columnValue = styleMap.get('--columns').toString();
+
+    // 计算出有几列
+    let columns = parseInt(columnValue);
+    if (columnValue === 'auto' || !columns) {
+      columns = Math.ceil(inlineSize / 350); // MAGIC NUMBER \o/.
+    }
+
+    // 根据列数，计算出每列的宽度
+    const childInlineSize = (inlineSize - ((columns + 1) * padding)) / columns;
+    const childFragments = await Promise.all(children.map((child) => {
+      return child.layoutNextFragment({fixedInlineSize: childInlineSize});
+    }));
+
+    let autoBlockSize = 0;
+    const columnOffsets = Array(columns).fill(0);
+    for (let childFragment of childFragments) {
+      // Select the column with the least amount of stuff in it.
+      /**
+       * 找出高度最小的那列
+       * val 是最小那列的高度
+       * idx 是最小那列的列数
+       */
+      const min = columnOffsets.reduce((acc, val, idx) => {
+        if (!acc || val < acc.val) {
+          return {idx, val};
+        }
+        return acc;
+      }, {val: +Infinity, idx: -1});
+
+      /**
+       * inlineOffset 计算每个子元素的横向偏移位置
+       * blockOffset 计算每个子元素的纵向偏移位置
+       * 相当于 position 的 left 和 top
+       */
+      childFragment.inlineOffset = padding + (childInlineSize + padding) * min.idx;
+      childFragment.blockOffset = padding + min.val;
+
+      /**
+       * 更新数组中最小列的高度
+       * blockOffset + blockSize
+       * like top + height
+       * 再更新最外层元素的高度
+       */
+      columnOffsets[min.idx] = childFragment.blockOffset + childFragment.blockSize;
+      autoBlockSize = Math.max(autoBlockSize, columnOffsets[min.idx] + padding);
+    }
+    // 最终得到所有的子元素的布局的位置及父级元素的高度
+    return {autoBlockSize, childFragments};
+  }
+});
+```
+3、在css中调用layout方法
+```css
+.masonry {
+  display: layout(masonry);
+  --padding: 20;
+  --columns: 3;
+}
+```
+打开[项目示例](https://minjiechang.github.io/react-css-houdini/#/layout)，查看在react中使用
+
+实际上，这里使用registerLayout实现的瀑布流的布局方式和我们直接使用js的方式实现并没有太大的区别，反而是出现了一些生僻的属性加大了我们理解的难度，那它的优势到底在哪呢？我个人认为主要有这几点：
+
+1、性能问题，js的执行和浏览器渲染是互斥的，每次执行js的计算会影响页面的刷新，但是registerLayout是在worklet中进行，与主线程隔离互不影响，性能要好<br>
+2、使用相对简单，实际上如果我们还不能理解它的实现方式，我们只需要获取对应的js文件后，放入项目中，调用layout()方法即可，就像在react中使用别人的组件库那样方便。
 
 ## 总结
 
-### 优点
+以上，我们分析了当前css开发中遇到的一些比较棘手的问题，然后尝试使用css polyfill 的方式来解决这个问题，但是在css的世界中，以及当前浏览器的限制因素，实现polyfill还是有一些困难的。为了解决开发者的这些需求，w3c组织推出了houdini，给予开发者更多的权限。
 
-### 问题
+然后我们介绍了目前houdini的发展现状，并在**react项目**中对相关的api做了尝试，并且惊喜的发现，它可以轻而易举的实现我们之前面对的棘手问题。
+
+当然，以上的api介绍并不是houdini的全部，还有几个api目前还没有别纳入到规范中，浏览器也还没有支持，比如`CSS Parsing API`、`CSS Typed OM`、` composited scrolling and animation`等，这里先暂不介绍，感兴趣的朋友可以找资料看看，后面完善后再做更新。
+
+## 最后
+
+最后想说的是，每项新技术的诞生，从它的功能提出，到被纳入标准，再到被正式投入使用，这其中肯定会经历比较长的过程，js如此，想必css更甚(参考flex的过程)
+
+但是不可否认的是，houdini的出现确实能帮我们解决一些css开发难点，对于它的未来，我们也可以抱着一定的希望的，希望它的到来能给css的世界带来更多有意思的事情。
+
+我们甚至可以畅想在未来，css houdini的技术被浏览器广泛支持后，houdini社区的一些开源的自定义模块painting、layout、property-and-value等是否将变得非常繁荣，就像现在基于react、vue的组件库那样？如果是那样的话，这将对于css是一个非常大的变革，对前端开发者也将是非常有益的！！
 
 ### 参考文档
 
-[w3c](https://www.w3.org/TR/css-properties-values-api-1/)
-[MDN](https://developer.mozilla.org/en-US/docs/Web/Houdini)
+[w3c](https://www.w3.org/TR/css-properties-values-api-1/)<br>
+[MDN](https://developer.mozilla.org/en-US/docs/Web/Houdini)<br>
+[GoogleChromeLabs](https://github.com/GoogleChromeLabs/houdini-samples)<br>
+[houdini-samples](https://googlechromelabs.github.io/houdini-samples/)<br>
+[w3c-houdini](https://www.w3cplus.com/css/css-houdini.html)<br>
+[houdini-quickstart](http://www.danielcwilson.com/blog/2018/02/houdini-quickstart/)<br>
