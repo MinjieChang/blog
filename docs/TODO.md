@@ -11,4 +11,9 @@ ssr
 上传海报
 参考：https://mp.weixin.qq.com/s/-3Y6pqXY3DqAXmDdEVoTbA
 
-css houdini
+待完善
+1、添加页签图
+2、添加gif动画
+3、图床是不是可以搞一搞 用github仓库
+4、完善首页
+5、最近博客样式改一改

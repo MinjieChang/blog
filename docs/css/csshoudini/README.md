@@ -2,7 +2,7 @@
 
 ## 前言
 
-开始听到houdini这个名称，就像刚听到react这个东西，一顿懵逼，不知是何方大神。经过一番了解后，也才发现它并没有很可怕，不过是为我们换了一种css的写法，相对以前给我们提供了更多的选择，有种手脚被放开了的感觉，至于要如何发挥出它的威力，需要开发者自行发挥想象力。下面让我们来一层层解开houdini的神秘的面纱！！
+开始听到houdini这个名称，就像刚听到react这个东西，一顿懵逼，不知是何方大神。经过一番了解后，也才发现它并没有很可怕，不过是为我们换了一种css的写法，相对以前给我们提供了底层API的能力，解放开发者被束缚的手脚，至于要如何发挥出它的威力，需要开发者自行发挥想象力。下面让我们来一层层解开houdini的神秘的面纱！！
 
 ## 现状
 
@@ -24,7 +24,7 @@
 
 我们似乎束手无策，除非浏览器给我们提供了这么一个东西，或者使用css预处理语言的比如sass、scss等(这些我们暂不考虑)
 
-我们采用转换css`(css polyfill)`的方式，既然官方不支持，我们就动手实现一个`民间版的random`，因为js polyfill不就是那么做的吗
+换一种思路，我们可以给css打补丁`(css polyfill)`的方式，既然官方不支持，我们就动手实现一个`民间版的random`，因为js polyfill不就是那么做的吗
 
 但是js polyfill是基于js语言的动态特性，用js给js打上补丁这是很容易实现的，但是**css没有运行时状态**啊，那我如何给它打补丁呢？
 
@@ -65,7 +65,7 @@ function accessCssom () {
   }
 }
 ```
-这个做法看似无懈可击，但是不幸的是，我们并没有在其中找到random的踪迹，所以刷新页面并没有想要的效果，原因是，**浏览器捧到不认识的css属性会直接忽略掉**。。。。:(，导致我们这次修改css的尝试失败。
+这个做法看似无懈可击，但是不幸的是，我们并没有在其中找到random的踪迹，所以刷新页面并没有想要的效果，原因是，**浏览器碰到不认识的css属性会直接忽略掉**。。。。:(，导致我们这次修改css的尝试失败。
 
 ### 修改原生css
 
@@ -381,7 +381,9 @@ registerPaint('headerHighlight', class {
 
 Worklets 的概念和 web worker 类似，它们允许你引入脚本文件并执行特定的 JS 代码，这样的 JS 代码要满足两个条件：第一，可以在渲染流程中调用；第二，和主线程独立。
 
-Worklet 脚本严格控制了开发者所能执行的操作类型，这就保证了性能。
+Worklet 是一个非常轻量且高度特别的worker。它可以让开发者在浏览器渲染进程中的多个部分做钩子。
+
+paint worklet对应着渲染的paint阶段，layout worklet对应着渲染过程的layout阶段
 
 所以注册paint方法需要放到独立的js文件中，让浏览器的Worklet加载执行。
 
@@ -391,7 +393,8 @@ Worklet 脚本严格控制了开发者所能执行的操作类型，这就保证
 
 所以可以推断，Worklets 的特点就是轻量以及生命周期较短。
 
-延伸：[Web worker，service worker和worklet](https://www.javascriptcn.com/read-52409.html)
+延伸：[Web worker，service worker和worklet](https://www.javascriptcn.com/read-52409.html)、
+[渲染的composition阶段](https://segmentfault.com/a/1190000014520786)
 
 ### CSS Layout API
 
@@ -510,10 +513,15 @@ registerLayout('masonry', class {
 
 我们甚至可以畅想在未来，css houdini的技术被浏览器广泛支持后，houdini社区的一些开源的自定义模块painting、layout、property-and-value等是否将变得非常繁荣，就像现在基于react、vue的组件库那样？如果是那样的话，这将对于css是一个非常大的变革，对前端开发者也将是非常有益的！！
 
+[项目地址](https://github.com/MinjieChang/react-css-houdini)<br>
+[项目示例](https://minjiechang.github.io/react-css-houdini/#/)<br>
+
 ### 参考文档
 
 [w3c](https://www.w3.org/TR/css-properties-values-api-1/)<br>
+[w3c 英文版](https://developer.mozilla.org/en-US/docs/Web/API/CSS_Painting_API/Guide)<br>
 [MDN](https://developer.mozilla.org/en-US/docs/Web/Houdini)<br>
+[polyfill的痛楚](https://www.w3ctech.com/topic/1979)<br>
 [GoogleChromeLabs](https://github.com/GoogleChromeLabs/houdini-samples)<br>
 [houdini-samples](https://googlechromelabs.github.io/houdini-samples/)<br>
 [w3c-houdini](https://www.w3cplus.com/css/css-houdini.html)<br>
