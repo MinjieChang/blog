@@ -24,7 +24,7 @@ react的性能优化会有比较多的点，现在我们从**工程方面**和**
 
 父组件的更新会导致其子组件也重新渲染，此时不论父组件传入子组件的prop是否发生变化，都会引起子组件的更新：
 
-```
+```js
 class App extends React.Component {
   state = {
     a: 1
@@ -56,7 +56,7 @@ class App extends React.Component {
 #### 慎用setState
 有些地方，我们只是想更新下组件中保存的state值，并不想重新触发渲染，这时候可以选择重新给state赋值，而不是调用setState
 
-```
+```js
 // bad
 this.setState({a: 'a'})
 // good
@@ -66,7 +66,7 @@ this.state.a = 'a'
 #### pureComponent
 对于父组件更新引发子组件更新的问题，可以使用生命周期shouldComponentUpdate和PureComponent
 
-```
+```js
 class Child extends React.Component {
   shouldComponentUpdate(nextProps, nextState){
     if(xxx){
@@ -81,7 +81,7 @@ react提供的PureComponent可以来减少不必要的渲染
 
 PureComponent的源码为：
 
-```
+```js
 if (this._compositeType === CompositeTypes.PureClass) {
   shouldUpdate = !shallowEqual(prevProps, nextProps) || ! shallowEqual(inst.state, nextState);
 }
@@ -90,7 +90,7 @@ if (this._compositeType === CompositeTypes.PureClass) {
 
 **浅对比**(shallowEqual)，我们看一下他的浅对比是如何实现的
 
-```
+```js
 const hasOwnProperty = Object.prototype.hasOwnProperty;
 
 /**
@@ -143,7 +143,7 @@ function shallowEqual(objA: mixed, objB: mixed): boolean {
 ```
 上面的函数对前后的值做一次浅比较，但是如果当对象的层级比较深，这个浅比较就无能为力了
 
-```
+```js
 let a = {
     name: 'jack',
     address: {
@@ -168,7 +168,7 @@ is(a, a)  // 返回true，此时不会触发react的更新
 下面我们实现一个高阶组件版的pureRender
 
 
-```
+```js
 import { shallowEqual } from 'react-redux';
 
 // 定义一个基本组件
@@ -202,7 +202,7 @@ React.memo 是react16.1新出的一个hooks api, 其实也是一个高阶组件�
 
 基本用法：
 
-```
+```js
 import { memo } from 'react';
 
 function Button(props) {
@@ -215,7 +215,7 @@ export default memo(Button);
 
 默认情况下，memo会对props做浅比较，这与pureComponentb比较类似，所以当props的层级较深，memo也无法捕捉到prpos深层的更新，导致组件不会重新渲染，所以此时需要我们手动判断props是否有修改，决定组件是否需要更新，memo提供的第二个参数可以做到这点
 
-```
+```js
 function arePropsEqual(prevProps, nextProps) {
   // your code
   return prevProps === nextProps;
@@ -243,7 +243,7 @@ export default memo(Button, arePropsEqual);
 > 2、慎用props
 
 props尽量只传组件使用到的数据，避免多余的更新
-```
+```js
 // bad
 <Component {...props}></Component>
 ```
@@ -255,7 +255,7 @@ props尽量只传组件使用到的数据，避免多余的更新
 绑定元素事件，通常有三种方式
 
 1、constructor绑定
-```
+```js
 constructor(){
     // 定义
     this.bindEvent = this.bindEvent.bind(this);
@@ -269,13 +269,13 @@ bindEvent(){}
 
 2、使用时绑定
 
-```
+```js
 <p onClick = {this.bindEvent.bind(this)}></p>
 ```
 
 3、使用箭头函数
 
-```
+```js
 // 定义事件
 bindEvent = () => {}
 // 使用
@@ -302,12 +302,12 @@ webpack提供三种代码分割方式：
 > 使用动态导入的方式
 
 我们可以将如下导入方式
-```
+```js
 import { add } from './math'
 add()
 ```
 改成import的形式，从而在初次加载时不去加载math模块，减少首次加载资源的体积
-```
+```js
 import('./math').then(math => {
     math.add()
 })
@@ -317,7 +317,7 @@ import('./math').then(math => {
 使用react提供的高阶组件react-loadable来动态加载组件
 
 
-```
+```js
 import Loadable from 'react-loadable';
 import Loading from './loading-component';
 
@@ -339,7 +339,7 @@ export default class App extends React.Component {
 
 服务端渲染，需要起一个node服务，可以使用express、koa等，调用react的renderToString方法，将根组件渲染成字符串，再输出到response
 
-```
+```js
 // using Express
 
 import { renderToString } from "react-dom/server";
@@ -355,7 +355,7 @@ app.get("/", (req, res) => {
 
 客户端使用render方法来生成HTML
 
-```
+```js
 import ReactDOM from 'react-dom';
 import MyPage from "./MyPage";
 ReactDOM.render(<MyPage />, document.getElementById('app'));
