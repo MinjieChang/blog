@@ -44,6 +44,7 @@ const themeConfig = {
         sidebarDepth: 2,
         children: [
           "/react/optimization/",
+          "/react/ssr/",
         ]
       },
       {
