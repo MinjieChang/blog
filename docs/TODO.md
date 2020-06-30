@@ -11,6 +11,14 @@ ssr
 上传海报
 参考：https://mp.weixin.qq.com/s/-3Y6pqXY3DqAXmDdEVoTbA
 
+3、redux-saga
+
+4、serverless
+
+5、html2canvas 探究
+
+6、微前端 实践
+
 待完善
 1、添加页签图
 2、添加gif动画
