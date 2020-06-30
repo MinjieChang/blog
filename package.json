@@ -7,6 +7,8 @@
   "scripts": {
     "docs:dev": "vuepress dev docs",
     "docs:build": "vuepress build docs",
+    "del-gh": "git push origin -d gh-pages",
+    "gh-pages": "npm run del-gh && git subtree push --prefix=docs/.vuepress/dist origin gh-pages",
     "deploy": "bash deploy.sh"
   }
 }
