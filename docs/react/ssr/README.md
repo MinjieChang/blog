@@ -4,12 +4,6 @@
 
 之前在写[react性能优化](../optimization)这篇文章中提到了ssr的部分，社区中有一些关于ssr的框架，比如大名鼎鼎的[nextjs](https://github.com/vercel/next.js)，在这篇文章中，我们就一步步来构建一个ssr的项目。
 
-本篇文章中，使用到的技术有：
-
-- bable7
-- react、redux、react-router、react-router-config
-- express
-
 ## 起步
 我们经常说ssr，那么ssr到底是什么呢？我们先通过一个简单的例子来看。
 
@@ -172,6 +166,28 @@ module.exports = {
       }
     }]
   }
+}
+```
+
+使用的bable7，配置.babelrc为：
+```js
+{
+  "presets": [
+      "@babel/preset-env",
+      "@babel/react"
+  ],
+  "plugins": [
+    ["@babel/plugin-transform-runtime", 
+      {
+        "absoluteRuntime": false,
+        "corejs": false,
+        "helpers": true,
+        "regenerator": true,
+        "useESModules": false,
+        "version": "7.0.0-beta.0"
+      }
+    ]
+  ]
 }
 ```
 
@@ -706,7 +722,7 @@ export const getHomeList = () => {
 ```
 然后在Home.js中引入
 ```js
-import s from './Home.js'
+import styls from './Home.js'
 ```
 当然在生效之前还需要安装两个loader：
 ```js
@@ -774,11 +790,124 @@ module: {
 ```
 再刷新页面，现在样式已经生效了。当然如果要使用到less或者sass这些css预处理器，可以再做相关的loader配置，这里不再展开。
 
-至此，我们已经实现了一个比较完整的ssr的架子，配置了路由、redux等，当然整体上还比较简陋，需要完善的地方还比较多，对一些未知的错误捕获还没有完善，后面还会再继续完善这方面的工作。
+#### 服务端注入css
+
+在上面我们加入了css后，确实在页面中生效了，但是这个css文件的注入其实是在客户端完成的，并不是在服务端注入的，查看源码可发现，服务端返回的文件并没有携带css文件：
+![alt](./images/13.png)
+
+现在我们要在服务端完成css的注入。首先要拿到对应的css文件，这个工作isomorphic-style-loader这个插件在编译时已经帮我们实现，打印styles可以发现，它提供这几个方法：
+
+- _getContent
+- _getCss
+- _insertCss
+
+通过 _getCss 这个方法我们可以拿到对应的css的文件，但是如何在服务端拿到这个css文件呢？
+
+实际上在服务端的StaticRouter组件中提供了一个钩子，在这里可以提供一个context属性，在服务端渲染中，匹配到路由的组件会被注入一个**staticContext**的prop，但是在客户端渲染的时候是没有这个prop的，所以我们可以在组件渲染的时候使用这个属性来区分出客户端和服务端
+
+首先，在服务端render组件前定义一个context，并传递给 StaticRouter 组件
+```js
+
+export const render = (req, res) => {
+  ...
+  const context = { css: [] }    
+  
+  <Provider store={store}>
+    <StaticRouter location={req.baseUrl} context={context}>
+      {Routes}
+    </StaticRouter>
+  </Provider>
+  ...
+}
+
+``` 
+
+然后在组件的生命周期增加如下逻辑：
+```js
+componentWillMount(){
+  // 通过这个属性可以判断是在服务端调用
+  if(this.props.staticContext) {
+    // 给服务端注入的变量 staticContext 的 css属性中加入 css文本
+    this.props.staticContext.css.push(styles._getCss());
+  }
+}
+```
+由于componentWillMount发生在render之前，在服务端的renderToString完后，此时context中已经有了css文件，我们把css文件取出加入到返回的style标签中
+
+```js
+  const cssStr = context.css.length ? context.css.join('\n') : '';
+```
+挂载到页面上
+```js
+  <style>${cssStr}</style>
+```
+
+现在刷新页面，打开源码，可以看到服务端已经注入了css文本：
+
+![alt](./images/14.png)
+
+#### 小总结
+
+以上我们实现了css文件在服务端的注入，但由此也带来了一些问题：
+- 需要在匹配到路由的组件生命周期中添加注入css的额外代码，可以说是对于组件的一种侵入，增加开发者心智负担
+- 这种方式还有局限性，它只支持cssModule的方式
+- css样式的重复加载，对于匹配到的组件，如果使用ssr注入样式，那么该组件会在服务端和客户端各加载一遍
+
+![alt](./images/15.png)
+
+考虑到这些问题，我个人认为在服务端注入css的做法需要再权衡一下。
+
+## 优化
+
+在上面提到对于注入css的组件需要在生命周期中添加额外代码，并且如果有多个组件需要这么做，他们的逻辑一样，我们可以使用高阶组件来封装一下：
+
+新建文件hoc/withStyle.js, 为了方便
+```js
+import React from 'react';
+
+function withStyle (styles) {
+  return function(WrappedComponent){
+    class Component extends React.Component{
+      // 在这个生命周期里加上css逻辑
+      componentWillMount(){
+        // 通过这个属性可以判断是在服务端调用
+        if(this.props.staticContext && this.props.staticContext.css) {
+          // 给服务端注入的变量 staticContext 的 css属性中加入 css文本
+          this.props.staticContext.css.push(styles._getCss());
+        }
+      }
+      render(){
+        return <WrappedComponent {...this.props}></WrappedComponent>
+      }
+    }
+    return Component;
+  }
+}
+export default withStyle
+
+```
+在Home组件中这么用即可：
+```js
+export default connect(mapStateToProps, { getHomeList })(withStyle(styles)(Home))
+```
+或者使用redux提供的compose方法组合多个高阶组件也可：
+
+```js
+export default compose(
+  connect(mapStateToProps, { getHomeList }),
+  withStyle(styles)
+)(Home)
+```
 
 ## 总结
+
+至此，我们已经实现了一个比较完整的ssr的架子，配置了路由、redux等，当然整体上还有待优化空间。
 
 最后来做一下总结吧，关于ssr来说一下个人的想法。ssr的优势我们在开头的部分已经说过了，主要是优化首屏加载和seo的支持，还有一个优点就是使用node充当中间层，做接口的转发、权限认证等等，但是缺点也比较明显
 
 - 增加代码的复杂度，同构的过程意味着一套代码需要在客户端和服务端各写一遍，提高开发人员的心智负担
 - 同一套代码需要在服务端运行一遍，虽然提高了首屏的渲染效率，但是加大了服务端的开销。
+
+在配置这个ssr的项目过程中也遇到了很多的坑，整体上不是很难，但对于react项目整体上的把控要求还是有一些的，希望看完整片文章的你也能搭建出属于自己的ssr架子。
+
+项目的完整源码可查看[github 地址](https://github.com/MinjieChang/react-ssr.git)

@@ -11,6 +11,8 @@ ssr
 上传海报
 参考：https://mp.weixin.qq.com/s/-3Y6pqXY3DqAXmDdEVoTbA
 
+2、前端灰度发布方案
+
 3、redux-saga
 
 4、serverless
