@@ -21,6 +21,10 @@ ssr
 
 6、微前端 实践
 
+7、ast的学习结果
+
+8、函数柯里化，无限柯里层级 https://github.com/mqyqingfeng/Blog/issues/42
+
 待完善
 1、添加页签图
 2、添加gif动画

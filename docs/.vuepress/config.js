@@ -39,6 +39,15 @@ const themeConfig = {
         ]
       },
       {
+        title: 'js',
+        collapsable: true,
+        sidebarDepth: 2,
+        children: [
+          "/js/async/",
+          "/js/promise/",
+        ]
+      },
+      {
         title: 'react',
         collapsable: true,
         sidebarDepth: 2,
@@ -61,7 +70,9 @@ const themeConfig = {
         collapsable: true,
         sidebarDepth: 2,
         children: [
-          "/css/csshoudini/"
+          "/css/csshoudini/",
+          "/css/textOverflow/",
+          "/css/word-break/",
         ]
       },
       {
