@@ -1,4 +1,4 @@
-## generator 自执行器
+## generator
 
 在做异步请求时，我们通常用async await的方式，很神奇的可以将异步转为同步的写法，类似这样
 

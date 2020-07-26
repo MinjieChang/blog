@@ -45,6 +45,7 @@ const themeConfig = {
         children: [
           "/js/async/",
           "/js/promise/",
+          "/js/curry/",
         ]
       },
       {
