@@ -44,7 +44,7 @@ const themeConfig = {
         sidebarDepth: 2,
         children: [
           "/js/async/",
-          "/js/promise/",
+          // "/js/promise/",
           "/js/curry/",
         ]
       },

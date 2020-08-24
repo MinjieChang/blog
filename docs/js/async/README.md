@@ -1,6 +1,8 @@
-## generator
+## async await 机制
 
-在做异步请求时，我们通常用async await的方式，很神奇的可以将异步转为同步的写法，类似这样
+异步逻辑的处理一直是前端届老生常谈的问题，从回调函数到事件监听到es6的promise、generator，再到最后的异步解决方案终结者async、await，现在我们一步步解开async、await的魔法
+
+在做异步请求时，我们通常用async await的方式，很神奇的可以将异步转为同步的写法:
 
 ```js
 function fetchData(params) {
@@ -24,7 +26,7 @@ getData().then(val => console.log(val))
 
 从这个例子，我们发现，在async函数内部，代码是一行一行执行的(同步执行)，然后async函数会返回一个promise对象，并把最后的返回值作为此promise的resolve结果的值。
 
-那么我们如何来模拟实现这样一个async的功能的函数呢？
+那么这种异步转同步的方式如何实现，我们如何来模拟实现这样一个async的功能的函数？
 
 其实在，async之前，es6也推出了generator函数来辅助异步的操作，通过generator函数的控制流的方式，调用者可以决定何时让函数向下执行，先看一下generator如何使用：
 
@@ -48,36 +50,44 @@ function *gen(params) {
   console.log('end');
   return 'getData end'
 }
-
 ```
 
 执行gen会返回一个迭代器
+
 ```js
 let g = gen()
-
 ```
+
 执行迭代器的next方法，控制函数向下执行，每次执行会返回一个对象，包含value属性和done属性，其中value属性的值是yield语句后面的返回值，done属性表示该generator函数是否执行完毕，值为true或false
+
 ```js
 // 第一次执行next，执行的结果是打印一下 start 然后返回 {value: 1, done: false}
 let first = g.next()
 ```
+
 需要注意的是，第一次执行g.next()方法，虽然返回了 {value: 1, done: false}，但是并没有将此返回值赋值给first变量。而是函数停止等号的右边，把执行的控制权交给了函数外部，直到下次执行next方法，才会继续回到函数内部继续向下执行，直到遇到了下个yield语句，依次类推。
 
 现在我们再次执行next
+
 ```js
 let second = g.next() 
-
 // 此时走到了这里 yield fetchData(); 返回的结果是 {value: Promise, done: false} 并赋值给 second
 ```
+
 此时执行了console.log(a)这条语句了，但是打印出来的确实undefined，why？这是由于只有在下次执行next方法传入的参数才会赋值给变量a，而此时我们什么也没有传入，如果我们这样执行next：
+
 ```js
 let second = g.next('赋值给a的值')
 ```
+
 那么此时打印的a的值就是'赋值给a的值'，那如果我想把上个yield的结果赋值给a呢？很简单，这样做：
+
 ```js
 let second = g.next(first.value)
 ```
+
 还没完，再执行一下yield，但是由于上次yield的value是个promise，我们需要等他的状态resolve后拿到了它的结果了再执行下次的yield，这样才能把结果传给b
+
 ```js
 second.value.then(data => {
   let third = g.next(data)
@@ -89,6 +99,7 @@ second.value.then(data => {
 ```
 
 那么如果我下次执行next，这就比较麻烦了，因为我要拿到 third 的值，难道我要接着在上次在then内部执行？
+
 ```js
 second.value.then(data => {
   let third = g.next(data) // 执行到这里来到了 yield 3 返回 {value: 3, done: false}
@@ -98,9 +109,11 @@ second.value.then(data => {
   // 执行 g.next(third.value)，返回的结果是 {value: 'getData end', done: true} 由于后面没有了yield语句，所以done的值就是true，表示执行结束，并把最终返回值赋值给了value属性
 })
 ```
+
 实际上确实要这样做，但是和之前的yild后面返回的同步的值的做法就不一致了，那么如何才能保持同步的和异步的执行next过程保持一致呢？
 
 为了达到一致的效果，我们可以把每次执行yild返回值的value属性的值使用promise包装一下，就是value的值实际是就转换成promise对象了，这样每次调用next方法就是这样的方式：
+
 ```js
 let first = g.next()
 Promise.resolve(first.value).then(data => {
@@ -115,19 +128,24 @@ Promise.resolve(first.value).then(data => {
   })
 })
 ```
+
 这个看起来像callback hell的东西其实可以看成是generator函数的控制流过程。这个东西看着是不是相当熟悉？是的，之前我们在分析koa2的中间件的compose函数实际上跟这个过程很类似，只不过这里的g.next方法是自动执行的，而compose中的next中间件是交给用户手动执行的
 
-那么现在我们要做的就是，实现一个函数来自动执行generator函数，我们想达到这样一个效果：
+那么现在我们要做的就是，实现一个函数来自动执行generator函数，我们想达到类似async函数一样的效果：
+
 ```js
 function runGenerator(genFn){
 }
 
 let fn = runGenerator(gen)
+
 fn().then((result) => {})
 ```
+
 runGenerator函数接收一个generator函数，执行完会返回一个新的函数，这个新函数会返回一个promise对象，以接收generator函数最终的返回值
 
 分析到现在，现在要实现这个函数就是比较容易的事情了：
+
 ```js
 function runGenerator(generatorFn){
   return function(){
@@ -149,6 +167,7 @@ function runGenerator(generatorFn){
   }
 }
 ```
+
 简单分析一下这个函数，主要在内部使用了递归，判断done属性，如果执行完就返回最终的结果，否则就使用Promise.resolve包装一下result.value，并在then回调中再次执行next的过程。
 
 现在我们来测试一下这个函数：
@@ -172,11 +191,12 @@ let fn = runGenerator(gen)
 fn().then((data) => {
   console.log(data, 'data========')
 })
-
 ```
+
 打印的结果依次是：start、1、2、3、2、end、getData end，很棒。
 
 其实这里还有点小瑕疵，就是没有处理错误的情况，比如执行yield语句抛错了，现在完善一下：
+
 ```js
 function runGenerator(generatorFn){
   return function(){
@@ -212,13 +232,13 @@ function runGenerator(generatorFn){
 
 有了上面的对generator的认识，现在就来解答下async是什么，它和generator是什么关系？
 
-到现在可以发现，我们实现的generator自执行函数runGenerator，它其实就是个民间版本的async awat
+到现在可以发现，我们实现的generator自执行函数runGenerator，它其实更像是个民间低配版本的async awat
 
 熟悉async await应该知道，await执行结果返回的结果是promise，async函数执行最后返回的也是个promise函数
 
 而我们的runGenerator已经完全满足了这个特性。只不过await 只接收返回resolve结果的promise，否则报错，而我们的函数会捕获yield报错语句，并将错误结果抛出。
 
-所以，为什么说async函数只是promise的语法糖，它的底层实际使用的是generator，而generator又是基于promise的。实际上，在babel编译async函数的时候，也会转化成generatora函数，并使用自动执行器来执行它。
+所以，为什么说async函数只是promise的语法糖，它的底层实际使用的是generator + promise 的实现。实际上，在babel编译async函数的时候，也会转化成generatora函数，并使用自动执行器来执行它。
 
 ## generator 机制
 
@@ -324,7 +344,10 @@ babel在编译时做了比较多的复杂工作，感兴趣的同学可以在bab
 
 本篇文章就是大致讲解了一下async await的实现机制，并简单的探索了一下generator的yield的挂起原理，感兴趣的同学可以顺着这个思路再深挖一下。
 
+有了对于generator函数的基本认识，下一篇文章就分析一下基于generator函数的redux-saga，看看它是如何处理异步请求的。
+
 refer：
 
 [Babel将Generator编译成了什么样子](https://juejin.im/post/5bd85cfbf265da0a9e535c10)<br>
-[Generator实现原理解析](https://juejin.im/post/5e3b9ae26fb9a07ca714a5cc)
+[Generator实现原理解析](https://juejin.im/post/5e3b9ae26fb9a07ca714a5cc)<br>
+[async 函数的含义和用法](http://www.ruanyifeng.com/blog/2015/05/async.html)

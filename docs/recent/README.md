@@ -1,5 +1,7 @@
 # 最新文章
 
+**2020-8** [模拟实现async await](../js/async/)
+
 **2020-7** [函数柯里化](../js/curry/)
 
 **2020-6** [react ssr 构建](../react/ssr/)
