@@ -25,6 +25,10 @@ ssr
 
 8、函数柯里化，无限柯里层级 https://github.com/mqyqingfeng/Blog/issues/42 done
 
+9、vue\vuex\nextTick
+
+10、setState
+
 待完善
 1、添加页签图
 2、添加gif动画
