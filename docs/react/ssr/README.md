@@ -32,19 +32,19 @@ app.listen(3001, () => {
 ```
 浏览器打开localhost:3001/，可以看到页面，这就是一个简单的ssr，实际上一些node渲染模版比如ejs、pug等做的也是类似的工作。
 
-![](http://qd13dqh4u.bkt.clouddn.com/ssr_base.png)
+![base.png](https://s1.ax1x.com/2020/09/01/dvmixe.png)
 
 所谓的ssr就是在服务端将html字符串拼接好后发送给浏览器，浏览器再解析展示出来的过程
 
 与ssr对应的是客户端渲染(csr)，那么客户端是什么样的，它与ssr有什么区别？用react脚手架create-react-app生成一个项目，run起来，打开控制台看看有什么：
-![](http://qd13dqh4u.bkt.clouddn.com/ssr_csr.png)
+![csr.png](https://s1.ax1x.com/2020/09/01/dvmdRU.png)
 
 我们发现就只有一个id为root的节点，除此之外没有别的节点元素，那么页面中显示的这些元素都是从哪来的？其实就是下面的script标签中引入的js代码执行后加载出来的。
 
 所以这俩个的区别就是，一个的页面解析过程在服务端完成，一个解析过程在浏览器端完成。
 
 通过一张图了解一下：
-![](http://qd13dqh4u.bkt.clouddn.com/ssr_differ.png)
+![diff.png](https://s1.ax1x.com/2020/09/01/dvmDsJ.png)
 
 那既然csr已经可以实现页面的渲染了，为什么还要ssr呢，何必还要多此一举？其实csr还是有其弊端的
 - 首屏白屏问题，csr需要浏览器加载js代码，再执行js代码生成html元素，这一加载再执行耗时成本较高，导致首页加载会有短暂的白屏出现
@@ -124,7 +124,7 @@ package.json的scripts下添加如下命令：
 > 注意：1、node-jsx这个库为了在服务端支持jsx的语法 2、nodemon方便监听文件变化，重启node应用
 
 打开控制台，可以看到渲染的整个html结构
-![](http://qd13dqh4u.bkt.clouddn.com/ssr_4.png)
+![4.png](https://s1.ax1x.com/2020/09/01/dvsIds.png)
 
 #### 小总结
 - 把react组件生成字符串的关键方法是ract提供的renderToString方法
@@ -242,14 +242,14 @@ app.use(express.static('dist'));
 `
 ```
 此时再点击按钮，发现事件已经可以添加上了
-![](http://qd13dqh4u.bkt.clouddn.com/ssr_5.png)
+![5.png](https://s1.ax1x.com/2020/09/01/dvsxeJ.png)
 
 #### 小总结
 在同构过程中，我们使用的方法是ReactDom.hydrate，而不是使用的ReactDom.render，这是由于在服务端渲染过程中，会给根元素加上data-reactroot这个属性，在客户端渲染过程中会使用hydrate方法复用渲染好的结构，然后加上事件即可，详情可见[hydrate](http://react.html.cn/docs/react-dom.html#hydrate)
 
 现在用一张图来表示整个的渲染流程：
 
-![](http://qd13dqh4u.bkt.clouddn.com/ssr_6.png)
+![6.png](https://s1.ax1x.com/2020/09/01/dvySoR.png)
 
 ### 添加路由
 
@@ -289,7 +289,7 @@ const App = () => {
 }
 ```
 刷新浏览器发现可以正常显示，点击链接也可以正常跳转，但是控制台有个警告提示：
-![](http://qd13dqh4u.bkt.clouddn.com/ssr_7.png)
+![7.png](https://s1.ax1x.com/2020/09/01/dvyKYt.png)
 
 这是因为在router.js中，每个Route组件外面包裹着一层div，但服务端返回的代码中并没有这个div,所以报错。如何去解决这个问题？需要将服务端的路由逻辑执行一遍。
 
@@ -341,7 +341,7 @@ app.use('*', function(req, res, ctx) {
 使用bable-node以解析esmodule的相关语法
 
 把路由切换到/login，刷新页面，查看网页源代码，发现返回的是Login组件的html字符串，这表明服务端已经可以针对特定的理由实现服务端渲染了，当然**这还只是对于一层的理由渲染，对于多层的嵌套路由，后面会介绍到**
-![](http://qd13dqh4u.bkt.clouddn.com/ssr_8.png)
+![8.png](https://s1.ax1x.com/2020/09/01/dvy8Og.png)
 
 #### 小总结
 - 服务端的路由使用的是 StaticRouter，因为是在服务端渲染，无需记录当前路由状态，所以是无状态路由
@@ -472,10 +472,10 @@ app.get('/api/list', function(req, res, next) {
 })
 ```
 刷新页面，发现Home组件调用了接口，并且确实渲染出了数据：
-![](http://qd13dqh4u.bkt.clouddn.com/ssr_9.png)
+![9.png](https://s1.ax1x.com/2020/09/01/dvytTs.png)
 
 但是查看源码，发现服务器返回的源码并不包含请求数据后渲染的元素：
-![](http://qd13dqh4u.bkt.clouddn.com/ssr_10.png)
+![10.png](https://s1.ax1x.com/2020/09/01/dvyaYq.png)
 
 也就是说，请求数据后再渲染的过程是发生在客户端的，如果这种情况发生在首屏的话，会导致渲染的时间更长，所以我们希望的结果是，在页面刷新的时候，服务端返回的页面是已经加载好数据的页面，而客户端不需要再此执行加载过程，这样以提高渲染效率。
 
@@ -629,7 +629,7 @@ export const getHomeList = () => {
 ### 注水和脱水
 
 在前面我们基本完成了服务端的数据预取工作，现在我们刷新页面，发现页面中并没有渲染我们拉取数据后的结果，但是我们打开源码发现其实服务端已经返回了预取数据后的结果：
-![](http://qd13dqh4u.bkt.clouddn.com/ssr_11.png)
+![11.png](https://s1.ax1x.com/2020/09/01/dvyRt1.png)
 
 这是由于，服务端和客户端的store不一致导致的问题，虽然在服务端完成了数据的预取工作，并更新了组件，但是在客户端代码重新执行了一遍，客户端又创建了空的store。那如何才能让客户端的store和服务端的store保持一致呢？这就需要数据的的**注水**和**脱水**操作
 
@@ -660,7 +660,7 @@ componentDidMount() {
 ```
 
 用一张图总结下这个注水和脱水的过程：
-![](http://qd13dqh4u.bkt.clouddn.com/ssr_12.png)
+![12.png](https://s1.ax1x.com/2020/09/01/dvyhp6.png)
 
 实际上，这个过程相对于纯客户端生成页面，就是少了一次接口请求的过程。
 
@@ -793,7 +793,7 @@ module: {
 #### 服务端注入css
 
 在上面我们加入了css后，确实在页面中生效了，但是这个css文件的注入其实是在客户端完成的，并不是在服务端注入的，查看源码可发现，服务端返回的文件并没有携带css文件：
-![](http://qd13dqh4u.bkt.clouddn.com/ssr_13.png)
+![13.png](https://s1.ax1x.com/2020/09/01/dvyTne.png)
 
 现在我们要在服务端完成css的注入。首先要拿到对应的css文件，这个工作isomorphic-style-loader这个插件在编译时已经帮我们实现，打印styles可以发现，它提供这几个方法：
 
@@ -844,7 +844,7 @@ componentWillMount(){
 
 现在刷新页面，打开源码，可以看到服务端已经注入了css文本：
 
-![](http://qd13dqh4u.bkt.clouddn.com/ssr_14.png)
+![14.png](https://s1.ax1x.com/2020/09/01/dvyOht.png)
 
 #### 小总结
 
@@ -853,7 +853,7 @@ componentWillMount(){
 - 这种方式还有局限性，它只支持cssModule的方式
 - css样式的重复加载，对于匹配到的组件，如果使用ssr注入样式，那么该组件会在服务端和客户端各加载一遍
 
-![](http://qd13dqh4u.bkt.clouddn.com/ssr_15.png)
+![15.png](https://s1.ax1x.com/2020/09/01/dv69BQ.png)
 
 考虑到这些问题，我个人认为在服务端注入css的做法需要再权衡一下。
 

@@ -376,6 +376,6 @@ myCompose(v1, v2)(value).then(submit).catch(()=>{})
 **Reference**
 
 [学习 koa 源码的整体架构](https://juejin.im/post/5e69925cf265da571e262fe6#heading-0)<br/>
-[使用四十行代码实现一个核心 koa](https://juejin.im/post/5e72b1e8e51d4526e8081022)
+[使用四十行代码实现一个核心 koa](https://juejin.im/post/5e72b1e8e51d4526e8081022)<br/>
 [知乎@姚大帅：可能是目前市面上比较有诚意的Koa2源码解读](https://zhuanlan.zhihu.com/p/34797505)<br>
 [IVWEB官方账号: KOA2框架原理解析和实现](https://ivweb.io/article.html?_id=100334)<br>
