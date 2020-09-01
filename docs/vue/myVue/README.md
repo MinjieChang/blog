@@ -2,4 +2,4 @@
 
 实现一个简易版的Vue
 
-[MyVue](https://github.com/MinjieChang/my-vue)
+[MyVue](https://github.com/MinjieChang/simple-vue)

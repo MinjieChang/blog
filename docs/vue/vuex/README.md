@@ -2,4 +2,4 @@
 
 实现一个自定版的Vuex
 
-[MyVue](https://github.com/MinjieChang/my-vue)
+[MyVue](https://github.com/MinjieChang/simple-vuex)
