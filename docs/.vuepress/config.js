@@ -36,6 +36,8 @@ const themeConfig = {
         children: [
           '/designPattern/subscribe/',
           '/designPattern/aop/',
+          '/designPattern/iterator/',
+          '/designPattern/proxy/',
         ]
       },
       {
@@ -44,8 +46,9 @@ const themeConfig = {
         sidebarDepth: 2,
         children: [
           "/js/async/",
-          // "/js/promise/",
+          "/js/promise/",
           "/js/curry/",
+          "/js/partial/",
         ]
       },
       {
@@ -87,7 +90,7 @@ const themeConfig = {
       },
     ],
     // sidebarDepth: 2,
-    lastUpdated: '最后更新时间', 
+    lastUpdated: '最后更新时间',
   }
 }
 
