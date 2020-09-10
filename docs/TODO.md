@@ -33,4 +33,6 @@ ssr
 1、添加页签图
 3、图床是不是可以搞一搞 用github仓库
 
-图床地址：https://imgchr.com/
+图床地址：
+https://pic.ioiox.com/ (优先使用)
+https://imgchr.com/

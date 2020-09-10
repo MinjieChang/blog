@@ -78,6 +78,7 @@ const themeConfig = {
           "/css/csshoudini/",
           "/css/textOverflow/",
           "/css/word-break/",
+          "/css/svgCircle/",
         ]
       },
       {
