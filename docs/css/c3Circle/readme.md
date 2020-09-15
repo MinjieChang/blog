@@ -262,6 +262,8 @@ function start(){
 
 ![preview3](./images/preview3.gif)
 
+完整代码[查看这里](https://github.com/MinjieChang/circle-process/blob/master/src/c3Circle.html)
+
 ### 总结
 
 通过上面的实践，我们可以解决了衔接处的断层问题，但是也出现了一个明显的视觉上的问题，就是不论每次增加多少的角度，都会在180度的时候有个停顿。如果有了更好的方案再看如何来解决这个问题。

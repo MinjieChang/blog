@@ -16,7 +16,7 @@ const themeConfig = {
           text: "知乎",
           link: "https://www.zhihu.com/people/jay-55-9/posts"
         },
-        { text: 'Github', link: 'https://github.com/MinjieChang' },
+        { text: 'Github', link: 'https://github.com/MinjieChang/myblog' },
     ],
     sidebar: [
       {
