@@ -1,4 +1,6 @@
-### 背景
+### promisefy
+
+#### 背景
 
 js中的异步函数一般的执行逻辑是，他们通常需要接收一个回调函数作为参数，当异步的方法有返回结果的时候再调用回调函数，把异步的结果作为回调函数的参数，比如node的异步api基本是使用的这种方式，还有ajax。
 
@@ -16,7 +18,7 @@ fs.readFile(path.join(__dirname, './a.js'), function(err, data){
 })
 ```
 
-### promisefy
+#### promisefy实现
 
 为了避免这种回调函数的缺陷，现在一些node库对于异步的操作改为基于promise的方式，比如mongoose等，异步的操作通常返回的是promise。
 
