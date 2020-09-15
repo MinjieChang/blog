@@ -79,6 +79,7 @@ const themeConfig = {
           "/css/textOverflow/",
           "/css/word-break/",
           "/css/svgCircle/",
+          "/css/c3Circle/",
         ]
       },
       {
