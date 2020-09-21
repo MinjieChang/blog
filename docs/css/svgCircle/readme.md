@@ -54,7 +54,7 @@ circle:
 
 其中，314是圆的周长，也就是边框的长度，我们把边框偏移100，也就是往左边隐藏100，得到的效果如下：
 
-[3](./images/3.png)
+![3](./images/3.png)
 
 但此时有个问题，边框偏移的位置是从右侧中间开始的，我们期望从上方开始计算偏移，这需要使用transform属性：
 
@@ -153,5 +153,7 @@ circle:
 ### 总结
 
 通过用svg实现进度条后，可发现核心的地方就在于两个属性，有了这个基本的认识后，再用react或vue实现也就比较容易了。
+
+refer:
 
 [react-circle](https://github.com/zzarcon/react-circle)

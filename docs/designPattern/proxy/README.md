@@ -316,5 +316,3 @@ mounted () {
   getLazyLoadImg.create(imgList)
 },
 ```
-
-最后编辑于 2019.11.4
