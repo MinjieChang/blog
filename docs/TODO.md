@@ -29,6 +29,14 @@ ssr
 
 10、setState
 
+**high：**
+- redux-saga
+- 组件库搭建 ui-design
+
+参考博客：
+- [若川](https://github.com/lxchuan12/blog.git
+- [山月]( https://github.com/shfshanyue/blog.git)
+
 待完善
 1、添加页签图
 3、图床是不是可以搞一搞 用github仓库
