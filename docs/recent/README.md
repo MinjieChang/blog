@@ -1,5 +1,9 @@
 # 最新文章
 
+**2020-11** [配置eslint+prettier](../helpers/eslint-prettier/)、[mac配置全局变量](../helpers/mac-env-path/)
+
+**2020-10** [redux-saga浅析](../react/redux-saga/)
+
 **2020-9** [css3 circle](../css/c3Circle/)、[svg circle](../css/svgCircle/)
 
 **2020-8** [模拟实现async await](../js/async/)

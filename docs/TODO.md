@@ -13,7 +13,7 @@ ssr
 
 2、前端灰度发布方案
 
-3、redux-saga
+3、redux-saga done
 
 4、serverless
 
@@ -31,6 +31,7 @@ ssr
 
 **high：**
 - redux-saga
+- dva
 - 组件库搭建 ui-design
 
 参考博客：

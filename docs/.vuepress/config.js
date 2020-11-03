@@ -29,7 +29,7 @@ const themeConfig = {
 				// ]
 			},
       {
-        title: '设计模式',
+        title: 'designPattern',
         // path: '/designPattern/',
         collapsable: true,
         sidebarDepth: 2,
@@ -59,6 +59,7 @@ const themeConfig = {
         children: [
           "/react/optimization/",
           "/react/ssr/",
+          "/react/redux-saga/",
         ]
       },
       {
@@ -89,6 +90,15 @@ const themeConfig = {
         sidebarDepth: 2,
         children: [
           "/node/koa2/",
+        ]
+      },
+      {
+        title: 'helpers',
+        collapsable: true,
+        sidebarDepth: 2,
+        children: [
+          "/helpers/eslint-prettier/",
+          "/helpers/mac-env-path/",
         ]
       },
     ],
