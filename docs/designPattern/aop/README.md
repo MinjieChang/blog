@@ -1,13 +1,13 @@
-### AOP模式
+# AOP模式
 
-##### aop 是什么
+## aop 是什么
 
 aop又叫面向切面编程，主要作用是把一些和跟核心业务逻辑无关的功能包括日志统计、打点上报、异常处理等。把这些功能抽离出来后，再通过==动态织入==的方式掺入业务逻辑模块中。aop在js中是个被严重忽略的技术点。
 
-##### aop有什么优势
-aop的好处首先是可以保持我们业务逻辑模块的纯净和高内聚性，其次，可以很方便的复用日志统计等功能模块
+aop的作用，首先是可以保持我们业务逻辑模块的纯净和高内聚性，其次，可以很方便的复用日志统计等功能模块
 
-##### 从一个例子开始
+## 从一个例子开始
+
 我们发现一段代码执行比较耗时，现在我们想知道，这段代码执行了多次时间。通常做法是，在执行开始阶段记录一下当前时间，在执行结束阶段用当前时间减去开始执行的时间：
 
 ```js
@@ -21,7 +21,8 @@ function test() {
   console.log(end - start)
 }
 ```
-这样的确可以解决问题，但是有个问题是，我们要打入到函数内部，去修改‘源码’，这样就对原函数的侵入性很强了，如果后面需要再函数执行前再插入某个功能，需要再对这个函数进行改动。其他逻辑和业务逻辑夹杂在一起，后面越来越难以维护。
+
+这样的确可以解决问题，但是有个问题是，我们要打入到函数内部，**去修改‘源码’**，这样就对原函数有侵入性，如果后面需要再函数执行前再插入某个功能，需要再对这个函数进行改动。其他逻辑和业务逻辑夹杂在一起，加大了后面维护的难度。
 
 现在我们用aop的方式加以改进，把其他功能动态织入到业务功能中，而不用修改原来的业务逻辑。js实现aop的方式有多种。我们使用Function.prototype拓展的方式来实现，先看两个函数：
 
@@ -47,6 +48,7 @@ Function.prototype.after = function (afterFn) {
   }
 }
 ```
+
 现在用这两个函数改造上面的记录时间：
 
 ```js
@@ -68,15 +70,16 @@ const logTime = function (fn) {
 }
 logTime(count)(111, 222)
 ```
+
 控制台会依次输出：111 222 before，‘count’, 111 222 after  
 看见没有，通过我们改造后的logTime函数， 现在我们可以使用这个函数，来给任何函数添加记录执行时间，实现了该函数复用的同时，不会侵入原函数内部。
 
+## 使用场景
 
-##### 常用场景
+### 分离表单请求和校验
 
-> 分离表单请求和校验  
+我们在提交表单请求之前，一般会先验证一下表单参数是否合规，类似这样:
 
-我们在提交表单请求之前，一般会先验证一下表单参数是否合规，类似这样: 
 ```js
 function validate (value) {
   if (!value.length) {
@@ -140,7 +143,7 @@ Function.prototype.after = function (afterFn) {
   }
 }
 ```
-通过观察我们发现，原函数和beforeFn其实是共用了this 和 arguments，此时this指向的是全局(window, 关于this下面再讲)
+通过观察我们发现，原函数和beforeFn其实是共用了 this 和 arguments，此时this指向的是全局(window, 关于this下面再讲)
 所以value参数也能顺利的传递到validata函数里.
 
 还有一个额外的问题是，validate函数内部有太多的if else 判断，我们可以使用策略模式来加以改造：
@@ -174,10 +177,10 @@ submit(formValue)
 ```
 现在validate函数不用再修改，如果新增了验证规则，只需要在validate_rules中添加验证函数即可，真正实现了验证规则的可配置性
 
-
-> 数据上报
+### 数据上报
 
 在移动端项目中，经常有加埋点的需求，比如点击了某个按钮，需要加对应的埋点，通常我们会在原函数内加上埋点：
+
 ```js
 {
   methods: {
@@ -190,7 +193,9 @@ submit(formValue)
   }
 }
 ```
+
 用aop来改造一下：
+
 ```js
 {
   methods: {
@@ -208,9 +213,7 @@ submit(formValue)
   }
 }
 ```
-
-
-> 职责链
+### 职责链
 
 通过观察Function.prototype.before和Function.prototype.after函数我们发现，通过控制beforeFn和afterFn的返回值(true 或 false)，我们可以控制函数是否继续往下执行，当返回一个==有效值时==阻断职责链的传递，而返回null或者false等时继续传递请求。这种方式对应需要进行流程控制的场景非常有效。
 
@@ -310,7 +313,7 @@ let uploadObj = get_plugin.after(get_html5).after(get_flash).after(get_form)()
 ```
 需要注意的是，在每个控件创建方法中，约定如果可以正常获取上传对象就返回此对象，否则返回null，这样控制职责链函数继续向下执行。
 
-> 动态修改参数
+### 动态修改参数
 
 通过观察before函数我们发现，beforeFn和原函数其实是共用this 和 arguments的，意味着我们可以在beforeFn中修改arguments来达到动态修改参数的目的，这就是使用before来做前置装饰。
 
@@ -334,7 +337,7 @@ fetchData = fetchData.before(function(param, time){
 })
 fetchData(param, 2000)
 ```
-> 组合替代继承
+### 组合替代继承
 
 js中子类通过继承的方式可以获取到父类的方法，子类在获取父类方法的基础上如果还有有自己个性的功能的话，可以使用改写父类的方法，如下，先定义一个Animal类, 和一个eat方法：
 ```js
@@ -374,9 +377,9 @@ instance.eat()
 ```
 是不是一切都变的更加简洁了，都不需要额外定义一个类
 
-##### 来个小总结吧
+### 小总结
 
-写到这里，aop要说的东西基本都说完了。有的同学可能就不同意了，你说了这么多aop好的方面，难道就没有缺点吗？是有的，比如它需要Function.prototype上面挂载before和after函数，有的同学就不太喜欢这样的方式。可以通过定义before 和 after 两个函数：
+到这里，aop要说的东西基本都说完了。有的同学可能就不同意了，你说了这么多aop好的方面，难道就没有缺点吗？是有的，比如它需要Function.prototype上面挂载before和after函数，有的同学就不太喜欢这样的方式。可以通过定义before 和 after 两个函数：
 ```js
 function before (originFn, beforeFn) {
   return function () {
@@ -409,7 +412,8 @@ a() // 输出得到1 2
 ```
 这种方式的缺点是，无法使用链式调用，除非多次使用before函数进行包装
 
-##### 关于this
+## 关于this
+
 在before和after函数内部的this分别指向什么？
 
 ```js
@@ -477,7 +481,8 @@ const obj = {
 let myGetName = obj.getName.before(obj.console2)
 myGetName()  // 打印得到的都是 rose
 ```
-我预计输出的会是jack, 为什么输出的却是rose ?
+
+预计输出的会是jack, 为什么输出的却是rose ?
 这是由于，newGetName执行时其this指向window, 所以代理函数的this指向window，导致beforeFn.apply(this, arguments) 和 self.apply(this, arguments) 中的this 都是 window, 所以obj.getName() 和 obj.console2() 中的this也都指向了window, 打印得到的都是rose
 
 那么这个问题怎么解决呢？很简单，调整newGetName的执行时候的this指向就完了：
@@ -491,10 +496,13 @@ obj.getName = obj.getName.before(obj.console2)
 // 这样调用，getName的this就指向了obj
 obj.getName()
 ```
-##### 尝试用reduce重写职责链
+## 重写职责链
+
+我们使用reduce方法来实现一下组合函数
 
 ```js
 function compose (...fns) {
+  if (fns.length === 1) return fns[0]
   return fns.reduce((prev, next) => {
     return function () {
       let ret = prev.apply(this, arguments)
@@ -521,16 +529,57 @@ let f3 = function () {
 let ret = compose(f1, f2, f3).call(o, 111111)
 console.log(ret)
 ```
-使用reduce函数，每迭代一次都会返回一个新的函数，然后该函数，这个代理函数在下次迭代中将再次被装饰
+使用reduce函数，每迭代一次都会返回一个新的函数，这个新的代理函数在下次迭代中将再次被装饰
 
-但是这个compose还有几个问题
+### 重写表单提交
+
+这个compose函数模拟的是前置装饰的作用，compose中约定的是，在上个函数中返回的结果为false的时候，后面的函数将不再继续执行了。利用这个特性，我们可以用来做表单提交前的校验工作。
+
+首先在正式提交前，需要做的校验工作，这里以vue代码为例：
+
+```js
+{
+  checkValid () {
+    let bol = false
+    this.$refs.form.validate((valid) => { bol = Boolean(valid) })
+    return bol
+  },
+  checkFee () {
+    const { minTreatmentFee, maxTreatmentFee } = this.form
+    if (minTreatmentFee && maxTreatmentFee && +minTreatmentFee > +maxTreatmentFee) {
+      this.$message({ type: 'warning', message: '最大值必须大于最小值' })
+      return false
+    }
+    return true
+  },
+}
+```
+
+正式表单提交工作：
+
+```js
+submit () {
+  // ajax 提交过程
+},
+```
+最后，在点击提交的时候，使用compose把这两个过程串起来
+
+```js
+onSave() {
+  this.$utils.compose(this.checkValid, this.checkFee, this.submit).call(this)
+}
+```
+这样做的好处是，可以把提交前的校验的逻辑和提交分离开来，避免把大量的校验代码写在`submit`的函数中，使得submit的功能更单一，这也符合函数单一性的原则。
+
+以上实现的compose可以实现前置校验的功能，但是这个compose还有几个问题
+
 - 它只支持前置装饰，对后置装饰无能为力
-- 不够灵活，现在compose方法管的太多，以至于是否继续向下执行
-这样的事情都由它来做了，我们想自己来接管这个过程。
+- 不够灵活，现在compose方法管的太多，以至于是否继续向下执行，这样的事情都由它来做了，我们想自己来接管这个过程。
 - 目前只支持同步的装饰，无法支持异步的装饰
 
 
-#### 使用高阶函数装饰
+## 使用高阶函数装饰
+
 上面我们提到了当前的compose函数存在的问题，为了解决这个问题，我们需要把next方法抽离出来，为我们在适当的时机调用，从而决定要不要继续往下面的装饰函数执行
 
 现在我们可以模仿redux的compose函数,使用高阶函数来对原函数加以装饰
@@ -574,8 +623,7 @@ console.log(dis('state'))
 - 支持前后装饰
 - next函数提到了外部，支持手动调用，调用者可以显示的控制链条是否继续向下传递，也解决了异步装饰的问题
 
-#### 如何实现redux/compose函数
-
+## 实现redux/compose函数
 
 ```js
 // 定义初始函数
@@ -624,7 +672,7 @@ newDis({name: 1111})
 现在，调整我们的装饰过程：
 
 ```js
-const newDis = m3(m2(m1(dis)))
+const newDis = m1(m2(m3(dis)))
 newDis({name: 1111})
 ```
 现在的结果是：
@@ -678,7 +726,7 @@ function compose(...middles){
 - f1执行中，先执行了m2，再将结果传给了m1
 - 所以最终的执行顺序依然是m1(m2(m3(action)))
 
-##### 最后的总结
+## 总结
 使用aop确实可以对特定的代码加以改进，它可以显著的将代码逻辑进行拆分，有效的实现了逻辑的解耦，遵循函数的单一职责的原则。然后再利用aop动态织入的能力，把拆分的函数进行组合，实现特定功能的可插拔性
 
 最后编辑于 2019.10.31
