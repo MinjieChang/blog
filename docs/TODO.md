@@ -34,7 +34,7 @@ ssr
 - dva
 - 组件库搭建 ui-design
 - redux\react-redux
-- 策略模式 https://segmentfault.com/a/1190000020135987
+- 策略模式 https://segmentfault.com/a/1190000020135987 https://github.com/jawil/blog/issues/19
 
 参考博客：
 - [若川](https://github.com/lxchuan12/blog.git

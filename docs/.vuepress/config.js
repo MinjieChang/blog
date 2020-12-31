@@ -38,6 +38,7 @@ const themeConfig = {
           '/designPattern/aop/',
           '/designPattern/iterator/',
           '/designPattern/proxy/',
+          '/designPattern/strategy/',
         ]
       },
       {

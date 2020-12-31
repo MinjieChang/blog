@@ -1,5 +1,7 @@
 # 最新文章
 
+**2020-12** [策略模式](../designPattern/strategy/)
+
 **2020-11** [配置eslint+prettier](../helpers/eslint-prettier/)、[mac配置全局变量](../helpers/mac-env-path/)
 
 **2020-10** [redux-saga浅析](../react/redux-saga/)
