@@ -61,6 +61,7 @@ const themeConfig = {
           "/react/optimization/",
           "/react/ssr/",
           "/react/redux-saga/",
+          "/react/breadcrumb/",
         ]
       },
       {
