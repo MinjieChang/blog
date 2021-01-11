@@ -898,7 +898,30 @@ export default compose(
   withStyle(styles)
 )(Home)
 ```
+## 调整文件结构
 
+现在项目中散落着比较多的文件夹，不便于管理，将目录结构优化一下，总体划分为 `server` 和 `client` 这两个文件夹，服务端相关的放到 `server`目录下，前端相关的放到 `client`目录下，调整后的结构如下：
+
+```js
+.
+├── README.md
+├── client
+│   ├── components
+│   ├── hoc
+│   ├── index.js
+│   ├── router.js
+│   ├── routes
+│   ├── store
+│   └── utils
+├── server
+│   ├── app.js
+│   ├── index.js
+│   └── utils.js
+├── webpack.base.js
+├── webpack.client.js
+├── webpack.server.js 
+└── yarn.lock
+```
 ## 总结
 
 至此，我们已经实现了一个比较完整的ssr的架子，配置了路由、redux等，当然整体上还有待优化空间。

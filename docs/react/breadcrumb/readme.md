@@ -16,7 +16,6 @@
 
 项目的基本结构使用的是之前搭建的[ssr](../ssr/README.md)的架子，这里需要使用到路由配置表，所以需要使用到[react-router-config](https://github.com/ReactTraining/react-router/tree/master/packages/react-router-config)这个库
 
-<!-- todo 地址待定 -->
 项目地址在这查看[react-breadcrumbs](https://github.com/MinjieChang/react-ssr)
 
 最终效果图如下：
