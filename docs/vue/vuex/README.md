@@ -1,5 +1,5 @@
 ### vuex简版实现
 
-实现一个自定版的Vuex
+类Vuex模拟实现
 
-[MyVue](https://github.com/MinjieChang/simple-vuex)
+[MyVuex](https://github.com/MinjieChang/simple-vuex)
