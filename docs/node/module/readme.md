@@ -674,5 +674,5 @@ webpack 提供了两个属性，`output.libraryTarget`和`output.library`
 
 refer:
 
-[babel 使用文档](https://github.com/jamiebuilds/babel-handbook/blob/master/translations/zh-Hans/user-handbook.md)
+[babel 使用文档](https://github.com/jamiebuilds/babel-handbook/blob/master/translations/zh-Hans/user-handbook.md)<br/>
 [「前端」import、require、export、module.exports 混合详解](https://github.com/ShowJoy-com/showjoy-blog/issues/39)
