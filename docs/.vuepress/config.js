@@ -95,6 +95,7 @@ const themeConfig = {
         sidebarDepth: 2,
         children: [
           "/node/koa2/",
+          "/node/module/",
         ]
       },
       {
