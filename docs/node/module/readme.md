@@ -165,12 +165,12 @@ console.log(a);
 es6的导入代码如下：
 
 ```js
-import { a, b, b } from './a.js'
+import { a, b, c } from './a.js'
 
 console.log(a, b, c)
 ```
 
-这种方式从引入的模块中导入两个变量，babel编译的结果：
+这种方式从引入的模块中导入三个变量，babel编译的结果：
 
 ```js
 var _a = require('./a.js');
