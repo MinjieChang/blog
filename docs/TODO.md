@@ -21,28 +21,24 @@ ssr
 
 6、微前端 实践
 
-7、ast的学习结果
+7、ast的学习结果 done
 
 8、函数柯里化，无限柯里层级 https://github.com/mqyqingfeng/Blog/issues/42 done
 
-9、vue\vuex\nextTick
+9、vue\vuex\nextTick done
 
 10、setState
 
 **high：**
 - redux-saga done
 - dva
-- 组件库搭建 ui-design
+- 组件库搭建 ui-design done
 - redux\react-redux
-- 策略模式 https://segmentfault.com/a/1190000020135987 https://github.com/jawil/blog/issues/19
+- 策略模式 https://segmentfault.com/a/1190000020135987 https://github.com/jawil/blog/issues/19 done
 
 参考博客：
 - [若川](https://github.com/lxchuan12/blog.git
 - [山月]( https://github.com/shfshanyue/blog.git)
-
-待完善
-1、添加页签图
-3、图床是不是可以搞一搞 用github仓库
 
 图床地址：
 https://pic.ioiox.com/ (优先使用)

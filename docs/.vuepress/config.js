@@ -96,6 +96,8 @@ const themeConfig = {
         children: [
           "/node/koa2/",
           "/node/module/",
+          "/node/babel/",
+          "/node/babel-plugin-console/",
         ]
       },
       {
