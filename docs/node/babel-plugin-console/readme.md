@@ -19,7 +19,7 @@ function code(x) {
 
 ![ast](./images/ast1.png)
 
-## 版本1
+### 版本1
 
 基于此，这里先初步实现一版，去掉 `console`即可：
 
@@ -53,7 +53,7 @@ function code(x) {
 ```
 发现 `console`语句都可被去掉
 
-## 版本2
+### 版本2
 
 上面一版本是去掉所有的 `console`语句，非常简单直接。但是在有些情况下，我们需要保留某些 `console`语句供线上调试使用，这时候我们约定，通过给 `console`语句添加特定注释，以确保不会被去掉。
 
@@ -147,6 +147,8 @@ function code(x) {
 **leadingComments**
 ![ast4](./images/ast4.png)
 
+### 版本3
+
 所以，这就需要在遍历时注意：
 
 - 遍历 **leadingComments** 的时候需要注意，它时候含有上个兄弟节点的保留注释
@@ -206,6 +208,53 @@ if (commentLine === expressionLine) {
 
 最终得到的就是我们想要的结果了
 
+## 测试
+
+测试可以使用两种方法
+
+1. 使用 `babel-core`提供的api
+
+这里需要安装 `bable-core`和 `babel-cli`
+
+```js
+const babel = require("babel-core");
+const consolePlugin = require("../plugins/consolePlugin")
+
+const result = babel.transform(code, {
+  plugins: [[consolePlugin, { removeMethods: null }]]
+});
+```
+`package.json`中添加脚本：
+```js
+{
+  "scripts": {
+    "console": "NODE_ENV='production' babel-node ./test/console.js",
+  },
+}
+```
+
+2. 使用 `babel-cli` 
+
+添加.babelrc 文件
+
+```js
+{
+  "plugins": ["./plugins/2consolePlugin"]
+}
+```
+`package.json`中添加脚本：
+```js
+{
+  "script": {
+    "babel": "NODE_ENV='production' babel ./test/console.js",
+    "babel2": "NODE_ENV='production' babel ./test/console.js -o result.js",
+  }
+}
+```
+这两个脚本的区别是：
+
+- 脚本1可将编译结果输出到控制台，
+- 脚本2将结果输出到 `result.js`文件中
 
 完整项目地址：[点这里](https://github.com/MinjieChang/babel-analys/blob/master/plugins/2consolePlugin.js)
 
