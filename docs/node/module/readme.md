@@ -582,7 +582,7 @@ export var b = 222
 ```
 最后只导出了变量 `a`。
 
-总结一下：
+从上面的分析中，支持 `tree-shaking`需要满足这几个条件
 
 1. tree-shaking 只对es6模块的导入导出有效，即使使用es6模块的方式引入commonjs模块的导出方式，也无法使tree-shaking生效
 2. 模块最终导出的内容取决于导入它的文件引用了其哪些变量，webpack对此进行分析，只导出那些外部引用文件使用到的变量，并最终shaking掉那些虽然导出但是未被使用到的变量
@@ -591,6 +591,14 @@ export var b = 222
 目前，大多数三方库遵循的是commonjs规范的导出(可能是使用了babel编译的结果)，所以这导致引入三方库时造成了许多不必要的变量引入
 
 所以对于三方库要支持tree-shaking的功能，要同时支持es6和commonjs规范的导出。对于这两种规范的导出，es6规范的入口需要在 `package.json` 中由指定 `module`字段指定，commonjs的入口还是由 `main`字段指定
+
+总结一下，如果开发一个三方库要支持tree-shaking，需要具备以下条件：
+
+1. 确保代码是es6格式，即 `export，import`
+2. `package.json` 中，设置 `sideEffects`
+3. 确保 `tree-shaking` 的函数没有副作用
+4. `.babelrc` 中设置 `presets [["env", { "modules": false }]]` 禁止转换模块，交由`webpack`进行模块化处理
+
 
 ### 按需加载
 
