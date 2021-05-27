@@ -98,6 +98,7 @@ const themeConfig = {
           "/node/module/",
           "/node/babel/",
           "/node/babel-plugin-console/",
+          "/node/babel-plugin-lodash/",
         ]
       },
       {
