@@ -1,8 +1,8 @@
 # 最新文章
 
-**2021-6** [babel-plugin-lodash插件实现](../node/babel-plugin-lodash/)
+**2021-6** [babel-plugin-lodash-import插件实现](../node/babel-plugin-lodash-import/)
 
-**2021-5** [babel-plugin-console插件实现](../node/babel-plugin-console/)
+**2021-5** [babel-plugin-console-omit插件实现](../node/babel-plugin-console-omit/)
 
 **2021-4** [import、export，require、exports模块化解析](../node/module/)
 

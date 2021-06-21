@@ -1,4 +1,4 @@
-# babel-plugin-lodash
+# babel-plugin-lodash-import
 
 实现 `lodash`按需加载的 `babel`插件
 
@@ -200,4 +200,4 @@ CallExpression(path, state, scope) {
 
 实际上官方也提供了一个类似功能的插件 [babel-plugin-lodash](https://www.npmjs.com/package/babel-plugin-lodash)，实际使用建议使用官方插件，此插件可作为学习实践材料。
 
-本文代码地址可在此[查看](https://github.com/MinjieChang/babel-analys/tree/master/plugins/3babel-plugin-lodash)
+本文代码地址可在此[查看](https://github.com/MinjieChang/babel-plugin-lodash-import)

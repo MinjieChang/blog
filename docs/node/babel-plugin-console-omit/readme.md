@@ -1,4 +1,6 @@
-# babel-plugin-console
+# babel-plugin-console-omit
+
+实现 线上删除 `log` 语句的 `babel` 插件
 
 ## 前言
 
@@ -256,7 +258,4 @@ const result = babel.transform(code, {
 - 脚本1可将编译结果输出到控制台，
 - 脚本2将结果输出到 `result.js`文件中
 
-完整项目地址：[点这里](https://github.com/MinjieChang/babel-analys/blob/master/plugins/2consolePlugin.js)
-
-refer:<br/>
-[babel-plugin-remove-console](https://github.com/jinggee/babel-plugin-remove-console/blob/master/src/index.js)
+完整项目地址：[点这里](https://github.com/MinjieChang/babel-plugin-conosle-omit)

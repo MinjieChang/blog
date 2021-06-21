@@ -97,8 +97,8 @@ const themeConfig = {
           "/node/koa2/",
           "/node/module/",
           "/node/babel/",
-          "/node/babel-plugin-console/",
-          "/node/babel-plugin-lodash/",
+          "/node/babel-plugin-console-omit/",
+          "/node/babel-plugin-lodash-import/",
         ]
       },
       {
