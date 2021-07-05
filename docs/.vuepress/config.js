@@ -99,6 +99,7 @@ const themeConfig = {
           "/node/babel/",
           "/node/babel-plugin-console-omit/",
           "/node/babel-plugin-lodash-import/",
+          "/node/webpack/",
         ]
       },
       {
