@@ -51,6 +51,7 @@ const themeConfig = {
           "/js/curry/",
           "/js/partial/",
           "/js/promisfy/",
+          "/js/refresh/",
         ]
       },
       {
