@@ -101,6 +101,7 @@ const themeConfig = {
           "/node/babel-plugin-console-omit/",
           "/node/babel-plugin-lodash-import/",
           "/node/webpack/",
+          "/node/webpack-lazy/",
         ]
       },
       {
