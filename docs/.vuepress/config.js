@@ -75,6 +75,7 @@ const themeConfig = {
           "/vue/myVue/",
           "/vue/nextTick/",
           "/vue/vuex/",
+          "/vue/router/"
         ]
       },
       {
