@@ -103,6 +103,7 @@ const themeConfig = {
           "/node/babel-plugin-lodash-import/",
           "/node/webpack/",
           "/node/webpack-lazy/",
+          "/node/devServer-mock/",
         ]
       },
       {

@@ -1,5 +1,7 @@
 # 最新文章
 
+**2022-3-09** [基于 webpack-dev-server 实现数据 mock 服务](../node/devServer-mock/)
+
 **2022-2-21** [记一次路由 bug 修复暨前端路由实现解析](../vue/router/)
 
 **2022-2** [webpack require.ensure 实现解析](../node/webpack-lazy/)
