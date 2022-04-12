@@ -64,6 +64,7 @@ const themeConfig = {
           "/react/redux-saga/",
           "/react/breadcrumb/",
           "/react/roadhog/",
+          "/react/redux/",
         ]
       },
       {
